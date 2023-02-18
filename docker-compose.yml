@@ -1,14 +1,25 @@
 services:
   agent:
     image: grafana/agent:v0.31.3
+    command:
+      - "--config.file"
+      - "/etc/agent.yaml"
+    volumes:
+      - "./agent.yaml:/etc/agent.yaml"
   caddy:
     image: caddy:2.6.4
+    environment:
+      OTEL_EXPORTER_OTLP_TRACES_ENDPOINT: "http://agent:4317"
+      OTEL_SERVICE_NAME: "caddy"
     volumes:
       - "./Caddyfile:/etc/caddy/Caddyfile"
     ports:
       - "8080:8080"
   frontend:
     build: .
+    environment:
+      OTEL_EXPORTER_OTLP_TRACES_ENDPOINT: "http://agent:4317"
+      OTEL_SERVICE_NAME: "frontend"
     volumes:
       - "./bin/demo:/usr/local/bin/demo"
     command:
@@ -16,6 +27,9 @@ services:
       - frontend
   backend:
     build: .
+    environment:
+      OTEL_EXPORTER_OTLP_TRACES_ENDPOINT: "http://agent:4317"
+      OTEL_SERVICE_NAME: "backend"
     volumes:
       - "./bin/demo:/usr/local/bin/demo"
     command:

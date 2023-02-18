@@ -3,6 +3,9 @@
 }
 http://localhost:8080 {
     handle {
+        tracing {
+            span "caddy-handler"
+        }
         reverse_proxy frontend:8080
     }
 }
