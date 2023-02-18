@@ -1,0 +1,23 @@
+services:
+  agent:
+    image: grafana/agent:v0.31.3
+  caddy:
+    image: caddy:2.6.4
+    volumes:
+      - "./Caddyfile:/etc/caddy/Caddyfile"
+    ports:
+      - "8080:8080"
+  frontend:
+    build: .
+    volumes:
+      - "./bin/demo:/usr/local/bin/demo"
+    command:
+      - /usr/local/bin/demo
+      - frontend
+  backend:
+    build: .
+    volumes:
+      - "./bin/demo:/usr/local/bin/demo"
+    command:
+      - /usr/local/bin/demo
+      - backend
