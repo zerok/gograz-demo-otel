@@ -1,11 +1,16 @@
 services:
   agent:
     image: grafana/agent:v0.31.3
+    environment:
+      - GRAFANA_USERNAME
+      - GRAFANA_API_KEY
     command:
+      - "--config.file.type=dynamic"
+      - "--enable-features=dynamic-config,integrations-next"
       - "--config.file"
-      - "/etc/agent.yaml"
+      - "file:///etc/grafana-agent/agent.yml"
     volumes:
-      - "./agent.yaml:/etc/agent.yaml"
+      - "./grafana-agent:/etc/grafana-agent"
   caddy:
     image: caddy:2.6.4
     environment:
