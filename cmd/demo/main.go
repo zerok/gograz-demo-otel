@@ -8,6 +8,7 @@ import (
 
 	"github.com/rs/zerolog"
 	"github.com/urfave/cli/v2"
+	"github.com/zerok/gograz-demo-otel/internal/backend"
 	"github.com/zerok/gograz-demo-otel/internal/frontend"
 )
 
@@ -30,8 +31,8 @@ func main() {
 			{
 				Name: "backend",
 				Action: func(c *cli.Context) error {
-					fe := frontend.New()
-					return fe.ListenAndServe(c.Context)
+					be := backend.New()
+					return be.ListenAndServe(c.Context)
 				},
 			},
 		},
