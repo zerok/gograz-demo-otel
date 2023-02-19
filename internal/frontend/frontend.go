@@ -11,7 +11,6 @@ import (
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/codes"
 	"go.opentelemetry.io/otel/propagation"
-	sdktrace "go.opentelemetry.io/otel/sdk/trace"
 	"go.opentelemetry.io/otel/trace"
 )
 
@@ -19,8 +18,8 @@ type Frontend struct {
 	tracer trace.Tracer
 }
 
-func New(tp *sdktrace.TracerProvider) *Frontend {
-	tracer := tp.Tracer("frontend")
+func New() *Frontend {
+	tracer := otel.GetTracerProvider().Tracer("frontend")
 	return &Frontend{
 		tracer: tracer,
 	}

@@ -10,7 +10,6 @@ import (
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/codes"
 	"go.opentelemetry.io/otel/propagation"
-	sdktrace "go.opentelemetry.io/otel/sdk/trace"
 	"go.opentelemetry.io/otel/trace"
 )
 
@@ -18,8 +17,8 @@ type Backend struct {
 	tracer trace.Tracer
 }
 
-func New(tp *sdktrace.TracerProvider) *Backend {
-	tracer := tp.Tracer("backend")
+func New() *Backend {
+	tracer := otel.GetTracerProvider().Tracer("backend")
 	return &Backend{
 		tracer: tracer,
 	}
