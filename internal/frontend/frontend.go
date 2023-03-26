@@ -39,6 +39,8 @@ func (fe *Frontend) ListenAndServe(ctx context.Context) error {
 		// operation explicitly
 		ctx = otel.GetTextMapPropagator().Extract(ctx, propagation.HeaderCarrier(r.Header))
 
+		// Now let's start a new trace tht uses the extracted data from the
+		// context for parent information:
 		ctx, span := fe.tracer.Start(ctx, "frontend-handler")
 		defer span.End()
 
@@ -55,6 +57,8 @@ func (fe *Frontend) ListenAndServe(ctx context.Context) error {
 			logger.Error().Err(err).Msg("Failed to retrieve data from backend")
 			http.Error(w, "backend request failed", http.StatusInternalServerError)
 			span.SetStatus(codes.Error, "failed to request backend data")
+			// If we also use RecordError, then the span will include a new
+			// event with details about the error:
 			span.RecordError(err)
 			return
 		}

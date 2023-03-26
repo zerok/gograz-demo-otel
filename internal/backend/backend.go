@@ -8,6 +8,7 @@ import (
 
 	"github.com/rs/zerolog"
 	"go.opentelemetry.io/otel"
+	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/codes"
 	"go.opentelemetry.io/otel/propagation"
 	"go.opentelemetry.io/otel/trace"
@@ -34,8 +35,9 @@ func (fe *Backend) ListenAndServe(ctx context.Context) error {
 	srv.Handler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		ctx := r.Context()
 		ctx = otel.GetTextMapPropagator().Extract(ctx, propagation.HeaderCarrier(r.Header))
-		ctx, span := fe.tracer.Start(ctx, "backend-handler")
+		_, span := fe.tracer.Start(ctx, "backend-handler")
 		defer span.End()
+		span.SetAttributes(attribute.String("user", "horst"))
 		fmt.Fprint(w, "hello from the backend")
 		span.SetStatus(codes.Ok, "")
 	})
